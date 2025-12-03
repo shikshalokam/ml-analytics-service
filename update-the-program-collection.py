@@ -4,6 +4,22 @@ import glob
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 from bson import ObjectId
+import os
+from configparser import ConfigParser, ExtendedInterpolation
+
+# -------------------------------
+# Config Setup
+# -------------------------------
+config_path = os.path.split(os.path.dirname(os.path.abspath(__file__)))
+config = ConfigParser(interpolation=ExtendedInterpolation())
+config.read(config_path[0] + "/config.ini")
+
+log_dir = config.get("LOGS", "program_components_validation_log_dir", fallback="logs")
+
+mongo_url = config.get("MONGO", "url", fallback="mongodb://localhost:27017")
+mongo_db = config.get("MONGO", "database_name", fallback="sl-prod")
+programs_collection = config.get("MONGO", "programs_collection", fallback="programs")
+solutions_collection = config.get("MONGO", "solutions_collection", fallback="solutions")
 
 # -------------------------------
 # Logging Setup
@@ -41,8 +57,8 @@ setup_logging()
 # -------------------------------
 # MongoDB connection
 # -------------------------------
-client = MongoClient("mongodb://localhost:27017")
-db = client["sl-prod"]
+client = MongoClient(mongo_url)
+db = client[mongo_db]
 
 programs_col = db["programs"]
 solutions_col = db["solutions"]
@@ -70,9 +86,9 @@ for pid in program_ids:
 
     solution_ids = [sol["_id"] for sol in matching_solutions]
 
-    program_solution_map[str(pid)] = [str(sid) for sid in solution_ids] # Store strings for printing/logging
+    program_solution_map[str(pid)] = [str(sid) for sid in solution_ids] 
 
-    print(f"Solutions found for {pid}: {len(solution_ids)}")
+    logging.info(f"Solutions found for {pid}: {len(solution_ids)}")
 
     # -------------------------------
     # STEP 3: Update program.components
@@ -85,15 +101,15 @@ for pid in program_ids:
         
         if result.modified_count > 0:
             msg = f"Updated Program {pid}: Added {len(solution_ids)} potential components"
-            print(msg)
+            logging.info(msg)
             logging.info(f"Program ID: {pid}, Added Components: {[str(s) for s in solution_ids]}")
         else:
-            print(f"No changes for Program {pid} (components already up to date)")
+            logging.info(f"No changes for Program {pid} (components already up to date)")
     else:
-        print(f"No solutions found for Program {pid}, skipping update")
+        logging.info(f"No solutions found for Program {pid}, skipping update")
 
 # -------------------------------
 # Final Program → Solutions map
 # -------------------------------
-print("\nFinal mapping (Program ID -> [Solution IDs]):")
-print(f"Processed {len(program_ids)} programs.")
+logging.info("\nFinal mapping (Program ID -> [Solution IDs]):")
+logging.info(f"Processed {len(program_ids)} programs.")
