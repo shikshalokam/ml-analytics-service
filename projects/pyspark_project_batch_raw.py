@@ -45,8 +45,8 @@ SUCCESS_LOG_PATH = config.get('LOGS', 'project_raw_success')
 ERROR_LOG_PATH = config.get('LOGS', 'project_raw_error')
 DRUID_BATCH_URL = config.get("DRUID", "batch_url")
 SL_PROJECT_LOCAL_INGESTION_SPEC = config.get("DRUID","project_local_ingestion_spec", fallback=None)
-SL_PROJECT_CLOUD_INGESTION_SPEC = config.get("DRUID","project_injestion_spec")
-DATASOURCE_NAME = "sl-project"
+SL_PROJECT_CLOUD_INGESTION_SPEC = config.get("DRUID","project_injestion_spec_raw")
+DATASOURCE_NAME = "sl-project-raw"
 SL_PROJECT_BLOB_PATH = config.get("COMMON", "projects_blob_path")
 SL_PROJECT_OUTPUT_DIR = config.get("OUTPUT_DIR", "project")
 CLOUD_MODULE_PATH = config.get("COMMON", "cloud_module_path")
