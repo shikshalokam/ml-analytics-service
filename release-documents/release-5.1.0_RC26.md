@@ -253,10 +253,24 @@ Druid
 ```
 
 ---
+## 5. Config.ini file changes 
 
-## 5. Command-Line Examples
+### 5.1 Add the config for `pyspark_project_batch_raw.py`
 
-### 5.1 Running `pyspark_project_batch_raw.py`
+```bash
+project_injestion_spec_raw = {{ ml_analytics_druid_project_injestion_raw_spec }}
+```
+
+### 5.2 Add the config for `pyspark_project_batch_agg`
+```bash
+ml_distinctCnt_projects_status_spec_agg = {{ ml_analytics_druid_distinctCnt_projects_status_injestion_agg_spec }}
+
+ml_distinctCnt_prglevel_projects_status_spec_agg = {{ ml_analytics_druid_distinctCnt_prglevel_projects_status_injestion_agg_spec }}
+```
+
+## 6. Command-Line Examples
+
+### 6.1 Running `pyspark_project_batch_raw.py`
 
 
 #### 1. First-Time Full Ingestion
@@ -271,7 +285,7 @@ python3 pyspark_project_batch_raw.py --is-first-time True
 python3 pyspark_project_batch_raw.py
 ```
 
-### 5.2 Running `pyspark_project_batch_agg.py`
+### 6.2 Running `pyspark_project_batch_agg.py`
 
 #### 1. Full Ingestion Daily Run
 
